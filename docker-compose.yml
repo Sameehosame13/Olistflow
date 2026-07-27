@@ -72,21 +72,30 @@ services:
     container_name: spark-master
     restart: always
     ports:
-      - "8081:8081"   # Spark Master UI
+      - "8888:8080"   # Spark Master Web UI (host:8888 → container:8080)
       - "7077:7077"   # Spark RPC
-    command: "/opt/spark/sbin/start-master.sh"
+    environment:
+      - SPARK_NO_DAEMONIZE=true
+      - SPARK_MASTER_HOST=spark-master
+    volumes:
+      - ./spark:/opt/spark-apps/spark
+    entrypoint: ["/opt/spark/sbin/start-master.sh"]
 
   spark-worker:
     image: apache/spark:3.5.1
     container_name: spark-worker
     restart: always
     ports:
-      - "8082:8082"   # Spark Worker UI
+      - "8081:8081"   # Spark Worker Web UI
     environment:
+      - SPARK_NO_DAEMONIZE=true
       - SPARK_MASTER=spark://spark-master:7077
       - SPARK_WORKER_CORES=2
       - SPARK_WORKER_MEMORY=2g
-    command: "/opt/spark/sbin/start-worker.sh spark://spark-master:7077"
+      - SPARK_WORKER_WEBUI_PORT=8081
+    volumes:
+      - ./spark:/opt/spark-apps/spark
+    entrypoint: ["/opt/spark/sbin/start-worker.sh", "spark://spark-master:7077"]
     depends_on:
       - spark-master
 
