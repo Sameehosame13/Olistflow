@@ -1,0 +1,37 @@
+docker exec -it kafka bash
+
+kafka-topics --create \
+  --bootstrap-server localhost:9092 \
+  --topic orders \
+  --partitions 3 \
+  --replication-factor 1
+
+kafka-topics --create \
+  --bootstrap-server localhost:9092 \
+  --topic order_items \
+  --partitions 3 \
+  --replication-factor 1
+
+kafka-topics --create \
+  --bootstrap-server localhost:9092 \
+  --topic order_payments \
+  --partitions 3 \
+  --replication-factor 1
+
+kafka-topics --create \
+  --bootstrap-server localhost:9092 \
+  --topic customers \
+  --partitions 3 \
+  --replication-factor 1
+
+kafka-topics --create \
+  --bootstrap-server localhost:9092 \
+  --topic products \
+  --partitions 1 \
+  --replication-factor 1
+
+kafka-topics --create \
+  --bootstrap-server localhost:9092 \
+  --topic sellers \
+  --partitions 1 \
+  --replication-factor 1

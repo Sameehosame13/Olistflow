@@ -44,8 +44,10 @@ services:
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
-      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29092,PLAINTEXT_HOST://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
 
       KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
@@ -70,7 +72,7 @@ services:
     container_name: spark-master
     restart: always
     ports:
-      - "8080:8080"   # Spark Master UI
+      - "8081:8081"   # Spark Master UI
       - "7077:7077"   # Spark RPC
     command: "/opt/spark/sbin/start-master.sh"
 
@@ -79,7 +81,7 @@ services:
     container_name: spark-worker
     restart: always
     ports:
-      - "8081:8081"   # Spark Worker UI
+      - "8082:8082"   # Spark Worker UI
     environment:
       - SPARK_MASTER=spark://spark-master:7077
       - SPARK_WORKER_CORES=2
