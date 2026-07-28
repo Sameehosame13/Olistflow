@@ -1,4 +1,3 @@
-
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import (
     col,
@@ -10,9 +9,9 @@ from pyspark.sql.functions import (
     coalesce,
     lit,
     datediff,
-    when
+    when,
+    broadcast,
 )
-from pyspark.sql.functions import broadcast
 
 
 SILVER_BASE = "hdfs://namenode:9000/data/cleaned"
@@ -147,16 +146,37 @@ def compute_payment_type_breakdown(tables):
     return kpi3
 
 
+POSTGRES_URL = "jdbc:postgresql://postgres:5432/olist_gold"
+POSTGRES_USER = "postgres"
+POSTGRES_PASSWORD = "postgrespassword"
+POSTGRES_DRIVER = "org.postgresql.Driver"
+
+
 def write_gold_table(df, table_name):
+    # 1. Save to HDFS Gold Parquet
     path = f"{GOLD_BASE}/{table_name}/"
-    print(f"Writing Gold table to {path}...")
+    print(f"Writing Gold table to HDFS: {path}...")
     (
         df.write
         .format("parquet")
         .mode("overwrite")
         .save(path)
     )
-    print(f"Successfully saved {table_name}.")
+    print(f"Successfully saved {table_name} to HDFS.")
+    # 2. Save to PostgreSQL
+    print(f"Writing Gold table '{table_name}' to PostgreSQL...")
+    (
+        df.write
+        .format("jdbc")
+        .option("url", POSTGRES_URL)
+        .option("dbtable", table_name)
+        .option("user", POSTGRES_USER)
+        .option("password", POSTGRES_PASSWORD)
+        .option("driver", POSTGRES_DRIVER)
+        .mode("overwrite")
+        .save()
+    )
+    print(f"Successfully saved {table_name} to PostgreSQL.")
 
 
 def main():

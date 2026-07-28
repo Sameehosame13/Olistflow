@@ -1,4 +1,3 @@
-
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, from_json
 from pyspark.sql.types import (
@@ -141,4 +140,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    print("Done.")	

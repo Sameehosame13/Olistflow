@@ -3,7 +3,7 @@ import json
 import time
 from datetime import datetime
 from pathlib import Path
-from confluent_kafka import Producer, KafkaException
+from confluent_kafka import Producer
 
 BROKER = "localhost:9092"
 SCRIPT_DIR = Path(__file__).resolve().parent
