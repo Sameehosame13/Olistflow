@@ -53,7 +53,7 @@ services:
       KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
 
     volumes:
-      - kafka_kraft:/var/lib/kafka/data
+      - kafka_kraft:/tmp/kraft-combined-logs
 
   kafdrop:
     image: obsidiandynamics/kafdrop:4.0.2
@@ -72,10 +72,12 @@ services:
     container_name: spark-master
     restart: always
     ports:
-      - "8081:8081"   # Spark Master UI
-      - "7077:7077"   # Spark RPC
+      - "8080:8080"
+      - "7077:7077"
     volumes:
       - ./spark:/opt/spark-apps/spark
+      - ./spark-jars:/opt/spark/jars/extra
+      - ./spark-conf/spark-defaults.conf:/opt/spark/conf/spark-defaults.conf
     command: "/opt/spark/bin/spark-class org.apache.spark.deploy.master.Master"
 
   spark-worker:
@@ -83,13 +85,15 @@ services:
     container_name: spark-worker
     restart: always
     ports:
-      - "8082:8082"   # Spark Worker UI
+      - "8081:8081"
     environment:
       - SPARK_MASTER=spark://spark-master:7077
-      - SPARK_WORKER_CORES=2
-      - SPARK_WORKER_MEMORY=2g
+      - SPARK_WORKER_CORES=8
+      - SPARK_WORKER_MEMORY=8g
     volumes:
       - ./spark:/opt/spark-apps/spark
+      - ./spark-jars:/opt/spark/jars/extra
+      - ./spark-conf/spark-defaults.conf:/opt/spark/conf/spark-defaults.conf
     command: "/opt/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077"
     depends_on:
       - spark-master

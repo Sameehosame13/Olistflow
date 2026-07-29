@@ -1,0 +1,12 @@
+docker exec -it spark-master /opt/spark/bin/spark-submit `
+  --master spark://spark-master:7077 `
+  /opt/spark-apps/spark/stream_reference.py
+  
+docker exec -it spark-master /opt/spark/bin/spark-submit `
+  --master spark://spark-master:7077 `
+  /opt/spark-apps/spark/stream_events.py
+  
+docker exec -it spark-master /opt/spark/bin/spark-submit `
+  --master spark://spark-master:7077 `
+  /opt/spark-apps/spark/enrich_and_aggregate.py
+  

@@ -12,7 +12,7 @@ CSV_DIR = SCRIPT_DIR.parent / "dataset"
 ORDERS_FILE = "orders.csv"
 TIMESTAMP_COLUMN = "order_purchase_timestamp"
 TIMESTAMP_FORMAT = "%Y-%m-%d %H:%M:%S" 
-SCALE_FACTOR = 86400  
+SCALE_FACTOR = 86400*10
 
 KEYED_FILES = {"orders.csv", "order_items.csv", "order_payments.csv"}
 KEY_COLUMN = "order_id"
